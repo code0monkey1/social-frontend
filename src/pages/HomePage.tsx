@@ -1,7 +1,7 @@
 function App() {
   return (
     <>
-      <div>Middle</div>
+      <div>Home Page</div>
     </>
   );
 }
