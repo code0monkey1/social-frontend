@@ -1,103 +1,83 @@
+import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import LockFilled from "@ant-design/icons/lib/icons/LockFilled";
-import { Card, Layout, Space } from "antd";
-import { Header, Content, Footer } from "antd/es/layout/layout";
-const layoutStyle = {
-  display: "grid",
-  placeItems: "center",
-  borderRadius: 8,
-  overflow: "hidden",
-  width: "100vw",
-  height: "100vh",
-};
-
-const headerStyle: React.CSSProperties = {
-  textAlign: "center",
-  color: "#fff",
-  height: 64,
-  paddingInline: 48,
-  lineHeight: "64px",
-  backgroundColor: "#4096ff",
-};
-
-const contentStyle: React.CSSProperties = {
-  textAlign: "center",
-  minHeight: 120,
-  lineHeight: "120px",
-  color: "#fff",
-  backgroundColor: "#FFFFFF",
-  display: "flex",
-  justifyContent: "center",
-  alignItems: "center",
-  gap: "10px",
-};
-const footerStyle: React.CSSProperties = {
-  textAlign: "center",
-  color: "#fff",
-  backgroundColor: "#4096ff",
-};
+import { Button, Card, Checkbox, Form, Input, Layout, Space } from "antd";
+import Logo from "../../components/icons/Logo";
 const LoginPage = () => {
   return (
     <>
-      <Layout style={layoutStyle}>
-        <Header style={headerStyle}>Header</Header>
-        <Content style={contentStyle}>
-          <Card
-            title={
-              <div
-                style={{
-                  fontSize: "20px",
-                  paddingInline: "10px",
-                }}
-              >
-                <Space>
-                  <LockFilled />
-                  Login Page
-                </Space>
-              </div>
-            }
+      <Layout
+        style={{
+          height: "100vh",
+          display: "grid",
+          placeItems: "center",
+        }}
+      >
+        <Space size="large" direction="vertical">
+          <Layout.Content
             style={{
-              width: 300,
-              height: 300,
-              backgroundColor: "skyblue",
-              alignContent: "center",
+              display: "flex",
+              justifyContent: "center",
               alignItems: "center",
             }}
           >
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-                alignContent: "center",
-                alignItems: "center",
-                width: "100%",
-                height: "100%",
-              }}
+            <Logo />
+          </Layout.Content>
+          <Card
+            bordered={false}
+            style={{
+              width: 300,
+            }}
+            title={
+              <Space
+                style={{
+                  fontSize: 16,
+                  justifyContent: "center",
+                  width: "100%",
+                }}
+              >
+                <LockFilled />
+                Login Page
+              </Space>
+            }
+          >
+            <Form
+              initialValues={{ username: "username", password: "password" }}
             >
-              <div style={{ marginBottom: "10px", marginTop: "10px" }}>
-                <Space>
-                  <span style={{ marginRight: "10px" }}>Username</span>
-                  <input
-                    type="text"
-                    placeholder="Username"
-                    style={{ padding: "5px" }}
-                  />
-                </Space>
-              </div>
-              <div style={{ marginBottom: "10px", marginTop: "10px" }}>
-                <Space>
-                  <span style={{ marginRight: "10px" }}>Password</span>
-                  <input
-                    type="text"
-                    placeholder="password"
-                    style={{ padding: "5px" }}
-                  />
-                </Space>
-              </div>
-            </div>
+              <Form.Item
+                name="username"
+                rules={[
+                  { required: true, message: "Please input your username!" },
+                ]}
+              >
+                <Input prefix={<UserOutlined />} />
+              </Form.Item>
+
+              <Form.Item
+                name="password"
+                rules={[
+                  { required: true, message: "Please input your password!" },
+                ]}
+              >
+                <Input.Password prefix={<LockOutlined />} />
+              </Form.Item>
+
+              <Form.Item valuePropName="checked">
+                <Checkbox defaultChecked>Remember me</Checkbox>
+                <a href="">Forgot Password</a>
+              </Form.Item>
+
+              <Form.Item>
+                <Button
+                  style={{ width: "100%" }}
+                  type="primary"
+                  htmlType="submit"
+                >
+                  Submit
+                </Button>
+              </Form.Item>
+            </Form>
           </Card>
-        </Content>
-        <Footer style={footerStyle}>Footer</Footer>
+        </Space>
       </Layout>
     </>
   );
