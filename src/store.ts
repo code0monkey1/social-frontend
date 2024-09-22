@@ -22,7 +22,7 @@ export type AuthState = {
 export const useAuthStore = create<AuthState>()(
   devtools((set) => ({
     user: null,
-    setUser: (user: User) => set({ user }),
-    logout: () => set({ user: null }),
+    setUser: (user: User) => set({ user }, undefined, "setUser"),
+    logout: () => set({ user: null }, undefined, "logout"),
   }))
 );

@@ -12,9 +12,10 @@ import {
 } from "antd";
 import Logo from "../../components/icons/Logo";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { self, login } from "../../http/api";
+import { self, login, logoutFromServer } from "../../http/api";
 import { Credentials } from "../../types";
 import { useAuthStore } from "../../store";
+import { usePermission } from "../../hooks/userPermission";
 
 const loginUser = async (credentials: Credentials) => {
   const { data } = await login(credentials);
@@ -26,6 +27,8 @@ const getSelf = async () => {
   return data;
 };
 const LoginPage = () => {
+  const { isAllowed } = usePermission();
+
   const { refetch } = useQuery({
     queryKey: ["self"],
     queryFn: getSelf,
@@ -33,7 +36,7 @@ const LoginPage = () => {
     // only execute when onSuccess function is reached in useMutation
   });
 
-  const { setUser } = useAuthStore();
+  const { setUser, logout } = useAuthStore();
 
   const { mutate, isError, isPending } = useMutation({
     mutationFn: loginUser,
@@ -41,6 +44,13 @@ const LoginPage = () => {
     onSuccess: async () => {
       // save userData to client state
       const { data } = await refetch();
+
+      if (!isAllowed(data)) {
+        logout();
+        await logoutFromServer();
+        return;
+      }
+
       setUser(data);
     },
   });
