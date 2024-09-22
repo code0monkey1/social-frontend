@@ -38,6 +38,14 @@ const LoginPage = () => {
 
   const { setUser, logout } = useAuthStore();
 
+  const { mutate: logOut } = useMutation({
+    mutationFn: logoutFromServer,
+    mutationKey: ["logout"],
+    onSuccess: () => {
+      logout();
+    },
+  });
+
   const { mutate, isError, isPending } = useMutation({
     mutationFn: loginUser,
     mutationKey: ["login"],
@@ -46,8 +54,8 @@ const LoginPage = () => {
       const { data } = await refetch();
 
       if (!isAllowed(data)) {
-        logout();
-        await logoutFromServer();
+        console.log(JSON.stringify(data, null, 2), "is not allowed");
+        await logOut();
         return;
       }
 
