@@ -7,7 +7,7 @@ const User = () => {
 
   const { user } = useAuthStore();
 
-  if (user != null) {
+  if (!user) {
     return <Navigate to="/auth/login" replace={true} />;
   }
 
