@@ -39,7 +39,6 @@ const Root = () => {
   }
   return (
     <>
-      <div>Route </div>
       <Outlet />
     </>
   );
