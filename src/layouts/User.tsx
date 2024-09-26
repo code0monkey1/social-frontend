@@ -1,13 +1,14 @@
 import { Navigate, Outlet } from "react-router";
 import { useAuthStore } from "../store";
 import Layout from "antd/es/layout";
-import { Menu, MenuTheme, theme } from "antd";
-
+import { Avatar, Dropdown, Flex, Menu, MenuTheme, theme } from "antd";
+import classNames from "classnames";
 import {
   HomeOutlined,
   MoonFilled,
   ReadOutlined,
   SunFilled,
+  UserOutlined,
 } from "@ant-design/icons";
 import { NavLink } from "react-router-dom";
 
@@ -68,20 +69,31 @@ const User = () => {
         </Sider>
         <Layout>
           <Header
-            onClick={switchLight}
             style={{
               padding: "1rem",
               //Update background color based on light theme
               background: light === "light" ? colorBgContainer : "#001529", //
-              display: "flex",
-              justifyContent: "flex-end",
             }}
           >
-            {light === "light" ? (
-              <MoonFilled style={{ fontSize: "25px" }} />
-            ) : (
-              <SunFilled style={{ fontSize: "25px", color: "white" }} />
-            )}
+            <Flex justify="end" gap={14}>
+              <Dropdown
+                menu={{
+                  items: [
+                    {
+                      key: "logout",
+                      label: "Logout",
+                      onClick: () => {
+                        useAuthStore.getState().logout();
+                      },
+                    },
+                  ],
+                }}
+                placement="bottomRight"
+                arrow
+              >
+                <Avatar size="large" icon={<UserOutlined />} />
+              </Dropdown>
+            </Flex>
           </Header>
           <Content style={{ margin: "0 16px" }}>
             {/* <Breadcrumb style={{ margin: "16px 0" }}>
@@ -91,8 +103,18 @@ const User = () => {
 
             <Outlet />
           </Content>
-          <Footer style={{ textAlign: "center" }}>
-            Common Networking Site
+          <Footer
+            className={classNames(
+              "customFooter",
+              light !== "light" ? "customFooterDark" : ""
+            )}
+          >
+            <span className="customFooterText">Common Networking Site</span>
+            {light === "light" ? (
+              <MoonFilled className="customMoonFilled" onClick={switchLight} />
+            ) : (
+              <SunFilled className="customSunFilled" onClick={switchLight} />
+            )}
           </Footer>
         </Layout>
       </Layout>

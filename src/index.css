@@ -1,3 +1,26 @@
 .logo {
   padding: 20px 20px;
 }
+.customFooter {
+  text-align: center;
+  display: flex;
+  justify-content: space-between;
+}
+.customFooterDark {
+  color: white;
+  background: #001529;
+}
+
+.customFooterText {
+  flex: 1;
+}
+
+.customMoonFilled {
+  font-size: 25px;
+  color: black;
+}
+
+.customSunFilled {
+  font-size: 25px;
+  color: white;
+}
