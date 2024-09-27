@@ -1,9 +1,19 @@
 import { Navigate, Outlet } from "react-router";
 import { useAuthStore } from "../store";
 import Layout from "antd/es/layout";
-import { Avatar, Dropdown, Flex, Menu, MenuTheme, theme } from "antd";
+import {
+  Avatar,
+  Badge,
+  Dropdown,
+  Flex,
+  Menu,
+  MenuTheme,
+  Space,
+  theme,
+} from "antd";
 import classNames from "classnames";
 import {
+  BellFilled,
   HomeOutlined,
   MoonFilled,
   ReadOutlined,
@@ -14,6 +24,7 @@ import { NavLink } from "react-router-dom";
 
 import Logo from "../components/icons/Logo";
 import { useState } from "react";
+import { useLogout } from "../hooks/useLogout";
 
 const { Sider, Header, Content, Footer } = Layout;
 
@@ -33,6 +44,8 @@ const User = () => {
   // get the user details
   // if user is not present , redirect them to auth route
   const [light, setLight] = useState<MenuTheme | undefined>("light");
+
+  const { logOut } = useLogout();
 
   const {
     token: { colorBgContainer },
@@ -70,29 +83,36 @@ const User = () => {
         <Layout>
           <Header
             style={{
-              padding: "1rem",
               //Update background color based on light theme
+              paddingLeft: "16px",
+              paddingRight: "16px",
               background: light === "light" ? colorBgContainer : "#001529", //
             }}
           >
-            <Flex justify="end" gap={14}>
-              <Dropdown
-                menu={{
-                  items: [
-                    {
-                      key: "logout",
-                      label: "Logout",
-                      onClick: () => {
-                        useAuthStore.getState().logout();
+            <Flex justify="end" gap="middle" align="end">
+              <Space align="center" size={16}>
+                <Badge dot={true}>
+                  <BellFilled />
+                </Badge>
+
+                <Dropdown
+                  menu={{
+                    items: [
+                      {
+                        key: "logout",
+                        label: "Logout",
+                        onClick: () => {
+                          logOut();
+                        },
                       },
-                    },
-                  ],
-                }}
-                placement="bottomRight"
-                arrow
-              >
-                <Avatar size="large" icon={<UserOutlined />} />
-              </Dropdown>
+                    ],
+                  }}
+                  placement="bottomRight"
+                  arrow
+                >
+                  <Avatar size="large" icon={<UserOutlined />} />
+                </Dropdown>
+              </Space>
             </Flex>
           </Header>
           <Content style={{ margin: "0 16px" }}>
