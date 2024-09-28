@@ -12,10 +12,11 @@ import {
 } from "antd";
 import Logo from "../../components/icons/Logo";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { self, login, logoutFromServer } from "../../http/api";
+import { self, login } from "../../http/api";
 import { Credentials } from "../../types";
 import { useAuthStore } from "../../store";
 import { usePermission } from "../../hooks/userPermission";
+import { useLogout } from "../../hooks/useLogout";
 
 const loginUser = async (credentials: Credentials) => {
   const { data } = await login(credentials);
@@ -36,15 +37,9 @@ const LoginPage = () => {
     // only execute when onSuccess function is reached in useMutation
   });
 
-  const { setUser, logout } = useAuthStore();
+  const { setUser } = useAuthStore();
 
-  const { mutate: logOut } = useMutation({
-    mutationFn: logoutFromServer,
-    mutationKey: ["logout"],
-    onSuccess: () => {
-      logout();
-    },
-  });
+  const { logOut } = useLogout();
 
   const { mutate, isError, isPending } = useMutation({
     mutationFn: loginUser,

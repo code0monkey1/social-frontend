@@ -14,10 +14,12 @@ import {
 import classNames from "classnames";
 import {
   BellFilled,
+  ContactsOutlined,
   HomeOutlined,
   MoonFilled,
   ReadOutlined,
   SunFilled,
+  TeamOutlined,
   UserOutlined,
 } from "@ant-design/icons";
 import { NavLink } from "react-router-dom";
@@ -38,6 +40,16 @@ const items = [
     key: "/user/feed",
     icon: <ReadOutlined />,
     label: <NavLink to="/user/feed">Feed</NavLink>,
+  },
+  {
+    key: "/user/friends",
+    icon: <TeamOutlined />,
+    label: <NavLink to="/user/friends">Friends</NavLink>,
+  },
+  {
+    key: "/user/people",
+    icon: <ContactsOutlined />,
+    label: <NavLink to="/user/people">People</NavLink>,
   },
 ];
 const User = () => {
@@ -115,12 +127,7 @@ const User = () => {
               </Space>
             </Flex>
           </Header>
-          <Content style={{ margin: "0 16px" }}>
-            {/* <Breadcrumb style={{ margin: "16px 0" }}>
-              <Breadcrumb.Item>User</Breadcrumb.Item>
-              <Breadcrumb.Item>Bill</Breadcrumb.Item>
-            </Breadcrumb> */}
-
+          <Content style={{ margin: "24px" }}>
             <Outlet />
           </Content>
           <Footer
