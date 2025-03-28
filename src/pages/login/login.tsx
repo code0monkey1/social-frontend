@@ -11,7 +11,7 @@ import {
   Space,
 } from "antd";
 import Logo from "../../components/icons/Logo";
-import { self, login } from "../../http/api";
+import { self, login } from "../../http/client";
 import { Credentials } from "../../types";
 import { useAuthStore } from "../../store";
 import { usePermission } from "../../hooks/userPermission";

@@ -1,8 +1,9 @@
 import { useEffect } from "react";
 import { useAuthStore } from "../store";
-import { self } from "../http/api"; // Assuming self is the API call to get user info
+import { self } from "../http/client"; // Assuming self is the API call to get user info
 import { Outlet } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
+import { AxiosError } from "axios";
 
 const getSelf = async () => {
   const { data } = await self();
@@ -16,7 +17,17 @@ const Root = () => {
     queryKey: ["self"],
     queryFn: getSelf, 
     // handle the retry attempts if there is network connection , and handle for invalid / expired token case
+    retry:(failureCount:number,error)=>{
 
+      if(error instanceof AxiosError && error.response?.status===401){
+        console.log("The is a 401 token failure , it's been handled don't retry 3 times")
+        // if it's a refresh token call , don't retry it again and again , as it's already been handled
+         return false;
+      }
+    console.log("failure count",failureCount)
+    return failureCount<3;  
+  },
+  
   });
   
   const {setUser} = useAuthStore()
