@@ -1,40 +1,43 @@
 import { createBrowserRouter } from "react-router-dom";
-import HomePage from "./pages/HomePage";
+//import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/login/login";
-import User from "./layouts/User";
+import HomePage from "./layouts/HomePage";
 import AuthPending from "./layouts/AuthPending";
 import { Feed } from "./pages/feed/feed";
+import DashBoard from "./layouts/DashBoard";
 import Root from "./layouts/Root";
 
 export const router = createBrowserRouter([
+
   {
-    path: "/",
-    element: <Root />,
-    children: [
-      {
-        path: "auth",
-        element: <AuthPending />,
+    path:"/",
+    element:<Root/>,
+    children:[
+    {
+        path: "",
+        element: <DashBoard />, //root element will be loaded first on app load and will query for user credentials 
         children: [
-          {
-            path: "login",
-            element: <LoginPage />,
-          },
-        ],
-      },
-      {
-        path: "user",
-        element: <User />,
-        children: [
-          {
-            path: "home",
-            element: <HomePage />,
+              { 
+                path: "",
+                element: <HomePage />,
+              },
+              {
+                path: "feed",
+                element: <Feed />,
+              },
+            ],
           },
           {
-            path: "feed",
-            element: <Feed />,
-          },
-        ],
-      },
-    ],
-  },
+            path: "auth",  // route for unauthenticated users 
+            element: <AuthPending />,
+            children: [
+              { 
+                path: "login", 
+                element: <LoginPage />,
+              },
+            ],
+      }
+    ]
+  }
+ 
 ]);

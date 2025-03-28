@@ -11,56 +11,63 @@ import {
   Space,
 } from "antd";
 import Logo from "../../components/icons/Logo";
-import { useMutation, useQuery } from "@tanstack/react-query";
 import { self, login } from "../../http/api";
 import { Credentials } from "../../types";
 import { useAuthStore } from "../../store";
 import { usePermission } from "../../hooks/userPermission";
 import { useLogout } from "../../hooks/useLogout";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
 const loginUser = async (credentials: Credentials) => {
   const { data } = await login(credentials);
   return data;
 };
-
 const getSelf = async () => {
   const { data } = await self();
   return data;
 };
+
 const LoginPage = () => {
+
   const { isAllowed } = usePermission();
 
+  console.log("Login Page Loaded")
+  
   const { refetch } = useQuery({
     queryKey: ["self"],
-    queryFn: getSelf,
+    queryFn: getSelf, 
+    // do not trigger when component  is loaded , only when onSuccess is triggered after 
+    // successful login , so set enabled true , so as to later use refetch() to get the 
+    // user data using the cookies
+    // obtained ones the user logs in 
     enabled: false,
-    // only execute when onSuccess function is reached in useMutation
   });
-
+  
   const { setUser } = useAuthStore();
-
-  const { logOut } = useLogout();
+  const {logOut} = useLogout();
 
   const { mutate, isError, isPending } = useMutation({
-    mutationFn: loginUser,
+    mutationFn: loginUser, // will be send all data from when the form data is submitted
     mutationKey: ["login"],
-    onSuccess: async () => {
-      // save userData to client state
-      const { data } = await refetch();
+    onSuccess: async () => { 
 
+      // save userData to client zustand state after useQuery gets the users info from  getSelf call
+      const { data } = await refetch(); 
+      
+      // only allow 'user' role users to log in to the frontend 
       if (!isAllowed(data)) {
         console.log(JSON.stringify(data, null, 2), "is not allowed");
-        await logOut();
+        logOut();
         return;
       }
 
       setUser(data);
-    },
+    }, 
   });
 
   return (
     <>
-      <Layout
+      <Layout 
         style={{
           height: "100vh",
           display: "grid",
@@ -69,7 +76,7 @@ const LoginPage = () => {
       >
         <Space size="large" direction="vertical">
           <Layout.Content
-            style={{
+            style={{ 
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
@@ -96,7 +103,7 @@ const LoginPage = () => {
             }
           >
             <Form
-              onFinish={(values) => mutate(values)}
+              onFinish={(values) => mutate(values)} // gets all the values once the form is filled and submitted 
               initialValues={{ email: "your@email", password: "password" }}
             >
               {isError && (
@@ -119,6 +126,7 @@ const LoginPage = () => {
                 name="password"
                 rules={[
                   { required: true, message: "Please input your password!" },
+
                 ]}
               >
                 <Input.Password prefix={<LockOutlined />} />

@@ -1,47 +1,46 @@
-import { useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
-import { Outlet } from "react-router";
-import { self } from "../http/api";
 import { useAuthStore } from "../store";
-import { AxiosError } from "axios";
+import { self } from "../http/api"; // Assuming self is the API call to get user info
+import { Outlet } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 
 const getSelf = async () => {
   const { data } = await self();
   return data;
 };
 
+
+ // This component does not render anything, fetches the user info fron the backend and sets it in the zustand store
 const Root = () => {
-  //check if user is already signed in
-  //if yes , redirect to user page
-  const { setUser } = useAuthStore();
-
-  const { data, isLoading } = useQuery({
+  const { data,isLoading} = useQuery({
     queryKey: ["self"],
-    queryFn: getSelf,
-    retry(failureCount, error) {
-      // avoid retrying if the failure code is 401 ( in which case we'll use refresh token to get a new access token )
+    queryFn: getSelf, 
+    // handle the retry attempts if there is network connection , and handle for invalid / expired token case
 
-      if (error instanceof AxiosError && error.response?.status === 401) {
-        return false;
-      }
-      return failureCount < 3;
-    },
   });
+  
+  const {setUser} = useAuthStore()
 
-  useEffect(() => {
-    if (data) {
-      setUser(data);
+  console.log("User details fetched in root component",JSON.stringify(data,null,2))
+
+  // if setUser is not inside useEffect with data and setUser dependencies, then it will go into infinite loop
+  useEffect(()=>{
+    if(data){
+      setUser(data)
     }
-  }, [data, setUser]);
-
-  if (isLoading) {
-    return <h2>Loading...</h2>;
+  },[data,setUser])
+ 
+  if(isLoading){
+    return <h3>Loading...</h3>
   }
+
   return (
     <>
+    <div style={{border:"yellow 2px solid"}}>Root Page</div>
       <Outlet />
     </>
   );
-};
+
+}
 
 export default Root;

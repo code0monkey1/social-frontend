@@ -22,8 +22,8 @@ import {
   TeamOutlined,
   UserOutlined,
 } from "@ant-design/icons";
-import { NavLink } from "react-router-dom";
 
+import { NavLink } from "react-router-dom";
 import Logo from "../components/icons/Logo";
 import { useState } from "react";
 import { useLogout } from "../hooks/useLogout";
@@ -34,7 +34,7 @@ const items = [
   {
     key: "/user/home",
     icon: <HomeOutlined />,
-    label: <NavLink to="/user/home">Home</NavLink>,
+    label: <NavLink to="">Home</NavLink>,
   },
   {
     key: "/user/feed",
@@ -52,20 +52,21 @@ const items = [
     label: <NavLink to="/user/people">People</NavLink>,
   },
 ];
-const User = () => {
-  // get the user details
-  // if user is not present , redirect them to auth route
+
+const HomePage = () => {
   const [light, setLight] = useState<MenuTheme | undefined>("light");
-
   const { logOut } = useLogout();
-
+  
   const {
     token: { colorBgContainer },
   } = theme.useToken();
-
+  
   const { user } = useAuthStore();
+  
+  // get the user details from zustand store
+  // if user is not present , redirect them to auth/login route (Login Page )
 
-  if (!user) {
+  if (user==null) {
     return <Navigate to="/auth/login" replace={true} />;
   }
 
@@ -80,6 +81,7 @@ const User = () => {
   return (
     <>
       {" "}
+        <div style={{border:"green 2px solid"}}>Home Page</div>
       <Layout style={{ minHeight: "100vh" }}>
         <Sider theme={light}>
           <div className="logo">
@@ -149,4 +151,4 @@ const User = () => {
   );
 };
 
-export default User;
+export default HomePage;
