@@ -35,8 +35,8 @@ and stop the request to reach the client , and proceed to retry and refresh the 
 to get a new accessToken and refreshToken using the refresh endpoint
 */
 
-// Track retries using a Map to store request identifiers
-const retryMap = new Map();
+// Track retries using a Set to store request identifiers
+const retrySet = new Set();
 
 api.interceptors.response.use((response) => response,async (error) => { // we get the error in the attribute of the second param
     // we will see if the response is a 401 ( i.e accessToken was expired )
@@ -46,11 +46,11 @@ api.interceptors.response.use((response) => response,async (error) => { // we ge
     // Create a unique identifier for this request
     const requestId = `${originalRequest.method}-${originalRequest.url}-${JSON.stringify(originalRequest.data || {})}`;
     
-    if (error.response?.status === 401 && !retryMap.has(requestId)) {
+    if (error.response?.status === 401 && !retrySet.has(requestId)) {
       // if the response status is 401 and the original request was not retried
       // will trigger when accessToken is not supplied, or when jwt in the access token has expired
       // Mark this request as retried
-      retryMap.set(requestId, true);
+      retrySet.add(requestId);
       console.log("accessToken is expired!! ")
       try {
         const originalHeaders = { ...originalRequest.headers }; // we get the original headers of the api request that failed
@@ -65,7 +65,7 @@ api.interceptors.response.use((response) => response,async (error) => { // we ge
         // we return the new request with the original headers
 
         // Clear the retry flag after successful refresh
-        retryMap.delete(requestId);
+        retrySet.delete(requestId);
 
         return api.request({
           ...originalRequest,
@@ -73,7 +73,7 @@ api.interceptors.response.use((response) => response,async (error) => { // we ge
         });
       } catch (error) {
         // Clear the retry flag if refresh fails
-        retryMap.delete(requestId);
+        retrySet.delete(requestId);
         console.log("refresh token was not found");
 
         // logout the user from the frontend ( i.e delete tokens) if even the refresh token was not found on server side
