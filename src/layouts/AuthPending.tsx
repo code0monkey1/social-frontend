@@ -16,7 +16,6 @@ const AuthPending = () => {
 
   return (
     <>
-      <div style={{border:"red 2px solid"}}>AuthPending</div>
       <Outlet />
     </>
   );

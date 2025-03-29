@@ -1,58 +1,154 @@
-//import { useQuery } from "@tanstack/react-query";
-//import { useEffect } from "react";
-import { Navigate, Outlet} from "react-router";
-//import { self } from "../http/api";
+import { Navigate, Outlet } from "react-router";
 import { useAuthStore } from "../store";
-//import { AxiosError } from "axios";
-//const getSelf = async () => {
-//  const { data } = await self();
-//  return data;
-//};
+import Layout from "antd/es/layout";
+import classNames from "classnames";
+
+import {
+  BellFilled,
+  ContactsOutlined,
+  HomeOutlined,
+  MoonFilled,
+  ReadOutlined,
+  SunFilled,
+  TeamOutlined,
+  UserOutlined,
+} from "@ant-design/icons";
+
+import { NavLink } from "react-router-dom";
+import Logo from "../components/icons/Logo";
+import { useState } from "react";
+import { useLogout } from "../hooks/useLogout";
+
+import {
+  Avatar,
+  Badge,
+  Dropdown,
+  Flex,
+  Menu,
+  MenuTheme,
+  Space,
+  theme,
+} from "antd";
+const { Sider, Header, Content, Footer } = Layout;
+
+const items = [
+  {
+    key: "/",  // the key should always be unique 
+    icon: <HomeOutlined />,
+    label: <NavLink to="/">Home</NavLink>,
+  },
+  {
+    key: "/user/feed",
+    icon: <ReadOutlined />,
+    label: <NavLink to="/user/feed">Feed</NavLink>,
+  },
+  {
+    key: "/user/friends",
+    icon: <TeamOutlined />,
+    label: <NavLink to="/user/friends">Friends</NavLink>,
+  },
+  {
+    key: "/user/people",
+    icon: <ContactsOutlined />,
+    label: <NavLink to="/user/people">People</NavLink>,
+  },
+];
 
 const DashBoard = () => {
-   // query for user credentials using the user cookies stored in the browzer 
-   const {user} = useAuthStore();
-   
-   if(user==null){
-    console.log(" Redirecting to /auth/login : The user is null")
-    // the replace true is there to ensure that when you press back, you go to the previous page
-    return <Navigate to="/auth/login" replace={true} />
-   }
 
+  // used to dynamically switch the theme
+  const [light, setLight] = useState<MenuTheme | undefined>("light");
+  const { logOut } = useLogout();
+  
+  const {
+    token: { colorBgContainer },
+  } = theme.useToken();
+  
+  const { user } = useAuthStore();
+  
+  // get the user details from zustand store
+  // if user is not present , redirect them to auth/login route (Login Page )
 
-  // const { data, isLoading } = useQuery({
-  //  queryKey: ["self"],
-  //  queryFn: getSelf,
-  //  // the retry function will only come into effect if the getSelf function throws an error ( maybe network error) 
-  //  // but if the user comes out to be unauthenticated (401) or the failure count is 3 , then we'll stop retrying !  
-  //  retry(failureCount, error) {
-
-  //    // avoid retrying if the failure code is 401 ( in which case we'll use refresh token to get a new access token )
-  //    if (error instanceof AxiosError && error.response?.status === 401) {
-  //      return false;
-  //    }
-  //    // we automatically get failureCount value as a param in retry, 
-  //    // also the error which lead to the failure of the initial api call which triggere retry
-  //    return failureCount < 3;
-  //  },
-  //});
-
-  //useEffect(() => {
-  //  if (data) {
-  //    setUser(data);
-  //  }
-  //}, [data, setUser]);
-
-
-  //if (isLoading) {
-  //  return <h2>Loading...</h2>;
-  //}
-
+  if (user==null) {
+    return <Navigate to="/auth/login" replace={true} />;
+  }
+ // theme switcher 
+  const switchLight = () => {
+    if (light === "light") {
+      setLight("dark");
+    } else {
+      setLight("light");
+    }
+  };
 
   return (
     <>
-    <div style={{border:"blue 2px solid"}}>DashBoard Page</div>
-      <Outlet />
+      {" "}
+      <Layout style={{ minHeight: "100vh" }}>
+        <Sider theme={light}>
+          <div className="logo">
+            <Logo />
+          </div>
+          <Menu
+            theme={light}
+            defaultSelectedKeys={["/"]}
+            mode="inline"
+            items={items}
+          />
+        </Sider>
+        <Layout>
+          <Header
+            style={{
+              //Update background color based on light theme
+              paddingLeft: "16px",
+              paddingRight: "16px",
+              background: light === "light" ? colorBgContainer : "#001529", //
+            }}
+          >
+            <Flex justify="end" gap="middle" align="end">
+              <Space align="center" size={16}>
+                <Badge dot={true}>
+                  <BellFilled />
+                </Badge>
+
+                <Dropdown
+                  menu={{
+                    items: [
+                      {
+                        key: "logout",
+                        label: "Logout",
+                        onClick: () => {
+                          logOut();
+                        },
+                      },
+                    ],
+                  }}
+                  placement="bottomRight"
+                  arrow
+                >
+                  <Avatar size="large" icon={<UserOutlined />} />
+                </Dropdown>
+              </Space>
+            </Flex>
+          </Header>
+          <Content style={{ margin: "24px" }}>
+            <Outlet />
+          </Content>
+          <Footer
+            className={classNames(
+              "customFooter",
+              light !== "light" ? "customFooterDark" : ""
+            )}
+          >
+            <span className="customFooterText">Common Networking Site</span>
+            {light === "light" ? (
+              <MoonFilled className="customMoonFilled" onClick={switchLight} />
+            ) : (
+              <SunFilled className="customSunFilled" onClick={switchLight} />
+            )}
+          </Footer>
+        </Layout>
+      </Layout>
     </>
   );
 };

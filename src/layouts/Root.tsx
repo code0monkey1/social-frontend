@@ -47,7 +47,6 @@ const Root = () => {
 
   return (
     <>
-    <div style={{border:"yellow 2px solid"}}>Root Page</div>
       <Outlet />
     </>
   );
