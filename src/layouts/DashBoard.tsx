@@ -3,7 +3,7 @@ import { useAuthStore } from "../store";
 import Layout from "antd/es/layout";
 import classNames from "classnames";
 
-import {
+import  {
   BellFilled,
   ContactsOutlined,
   HomeOutlined,
@@ -12,7 +12,7 @@ import {
   SunFilled,
   TeamOutlined,
   UserOutlined,
-} from "@ant-design/icons";
+}from "@ant-design/icons";
 
 import { NavLink } from "react-router-dom";
 import Logo from "../components/icons/Logo";
@@ -38,19 +38,19 @@ const items = [
     label: <NavLink to="/">Home</NavLink>,
   },
   {
-    key: "/user/feed",
+    key: "/feed",
     icon: <ReadOutlined />,
-    label: <NavLink to="/user/feed">Feed</NavLink>,
+    label: <NavLink to="/feed">Feed</NavLink>,
   },
   {
-    key: "/user/friends",
+    key: "/friends",
     icon: <TeamOutlined />,
-    label: <NavLink to="/user/friends">Friends</NavLink>,
+    label: <NavLink to="/friends">Friends</NavLink>,
   },
   {
-    key: "/user/people",
+    key: "/people",
     icon: <ContactsOutlined />,
-    label: <NavLink to="/user/people">People</NavLink>,
+    label: <NavLink to="/people">People</NavLink>,
   },
 ];
 
